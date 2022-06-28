@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <p>Вы авторизовались как пользователь: {{ user.username }}, и не можете регистрироваться.</p>
+{% else %}
+    <form method="POST">
+        {% csrf_token %}
+        <p>Имя пользователя: {{ create_user_form.username }}</p>
+        <p>Дата рождения: {{ create_user_form.date_of_birth }}</p>
+        <p>О себе: {{ create_user_form.bio }}</p>
+        <p>Статус: {{ create_user_form.status }}</p>
+        <p>Пароль: {{ create_user_form.password1 }}</p>
+        <p>Подтвердите пароль: {{ create_user_form.password2 }}</p>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    {% for message in messages %}
+        <li><b>{{ message }}</b></li>
+    {% endfor %}
+{% endif %}
+</body>
+</html>

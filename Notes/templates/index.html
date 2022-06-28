@@ -10,11 +10,12 @@
 <body>
 {% for user in users %}
     <p><b>Пользователь: {{ user }}</b></p>
-        {% for note in user.user_notes.all|slice:'20' %}
-            <p>-Дата: {{ note.dt }}</p>
-            <p>-Текст: {{ note.text }}</p>
-            <p>--------------</p>
-        {% endfor %}
+    {% for note in user.user_notes.all|slice:'20' %}
+        <p>-Дата: {{ note.dt }}</p>
+        <p>-Заголовок: {{ note.title }}</p>
+        <p>-Текст: {{ note.text }}</p>
+        <p>--------------</p>
+    {% endfor %}
 {% endfor %}
 </body>
 </html>

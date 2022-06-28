@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Авторизация</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <p>Вы авторизовались как пользователь: {{ user.username }}.</p>
+    <form method="GET" action="{% url logout %}">
+        <button type="submit">Выйти</button>
+    </form>
+    {% for message in messages %}
+        <li><b>{{ message }}</b></li>
+    {% endfor %}
+{% else %}
+    <p>Пожалуйста авторизуйтесь или <a href="{% url sign-up %}">зарегистрируйтесь</a>.</p>
+    <form method="POST">
+        {% csrf_token %}
+        {{ login_form }}
+        <button type="submit">Авторизоваться</button>
+    </form>
+    {% for message in messages %}
+        <li><b>{{ message }}</b></li>
+    {% endfor %}
+{% endif %}
+
+
+</body>
+</html>

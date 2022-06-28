@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Добавить заметку</title>
+</head>
+<body>
+<h1>Добавить заметку</h1>
+{% if user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        <p>Заголовок: {{ create_note_form.title }}</p>
+        <p>Текст: {{ create_note_form.text }}</p>
+        <button type="submit">Отправить</button>
+        {% for message in messages %}
+            <li><b>{{ message }}</b></li>
+        {% endfor %}
+    </form>
+{% else %}
+    <p>Пожалуйста <a href="{% url login %}">авторизуйтесь</a> или <a href="{% url sign-up %}">зарегистрируйтесь</a>.</p>
+{% endif %}
+</body>
+</html>
