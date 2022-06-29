@@ -1,60 +1,35 @@
 # coding=utf-8
 # Create your views here.
-from django.core.urlresolvers import reverse
+from django.contrib.auth import login, authenticate, logout
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView, FormView
 
 from app.forms import CreateCustomUserForm, CustomAuthenticationForm, CreateNoteForm
 from app.models import CustomUser, Note
-from django.contrib.auth import login, authenticate, logout
-from django.contrib import messages
 
 
-class SignUpView(TemplateView):
-    template_name = "signup.html"
-
-    def post(self, request, *args, **kwargs):
-        form = CreateCustomUserForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.info(request, "Регистрация прошла успешно.")
-            return redirect(reverse('sign-up'))
-        else:
-            messages.info(request, "Ошибка регистрации!")
-            return redirect(reverse('sign-up'))
-
-    def get_context_data(self, **kwargs):
-        context = {'create_user_form': CreateCustomUserForm}
-        return context
+class SignUpView(CreateView):
+    template_name = 'signup.html'
+    form_class = CreateCustomUserForm
+    success_url = reverse_lazy('login')
 
 
-class LoginView(TemplateView):
+class LoginView(FormView):
     template_name = "login.html"
+    form_class = CustomAuthenticationForm
+    success_url = reverse_lazy('login')
 
-    def post(self, request, *args, **kwargs):
-        form = CustomAuthenticationForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, "Успешная авторизация")
-                return redirect(reverse('login'))
-            else:
-                messages.info(request, "Неправильные данные.")
-        else:
-            messages.info(request, "Неправильные данные.")
-        return redirect(reverse('login'))
-
-    def get_context_data(self, **kwargs):
-        context = {'login_form': CustomAuthenticationForm}
-        return context
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        login(self.request, user)
+        return super(LoginView, self).form_valid(form)
 
 
 def logout_request(request):
     logout(request)
-    messages.info(request, "Вы покинули аккаунт.")
     return redirect(reverse('login'))
 
 
@@ -76,21 +51,11 @@ class HomePageView(TemplateView):
         return context
 
 
-class CreateNoteView(TemplateView):
-    template_name = "create_note.html"
+class NoteCreateView(CreateView):
+    template_name = 'create_note.html'
+    form_class = CreateNoteForm
+    success_url = reverse_lazy('home')
 
-    def post(self, request, *args, **kwargs):
-        form = CreateNoteForm(data=request.POST)
-        if form.is_valid():
-            title = form.cleaned_data.get('title')
-            text = form.cleaned_data.get('text')
-            Note.objects.create(title=title, text=text, author=request.user)
-            messages.info(request, "Заявка добавлена.")
-            return redirect(reverse('create-note'))
-        else:
-            messages.info(request, "Ошибка.")
-        return redirect(reverse('create-note'))
-
-    def get_context_data(self, **kwargs):
-        context = {'create_note_form': CreateNoteForm}
-        return context
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(NoteCreateView, self).form_valid(form)

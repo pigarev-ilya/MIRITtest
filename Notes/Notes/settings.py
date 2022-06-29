@@ -1,6 +1,9 @@
 # Django settings for Notes project.
 import os
 
+
+
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

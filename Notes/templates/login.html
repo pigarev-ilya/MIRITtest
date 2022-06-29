@@ -13,19 +13,13 @@
     <form method="GET" action="{% url logout %}">
         <button type="submit">Выйти</button>
     </form>
-    {% for message in messages %}
-        <li><b>{{ message }}</b></li>
-    {% endfor %}
 {% else %}
     <p>Пожалуйста авторизуйтесь или <a href="{% url sign-up %}">зарегистрируйтесь</a>.</p>
     <form method="POST">
         {% csrf_token %}
-        {{ login_form }}
+        {{ form }}
         <button type="submit">Авторизоваться</button>
     </form>
-    {% for message in messages %}
-        <li><b>{{ message }}</b></li>
-    {% endfor %}
 {% endif %}
 
 

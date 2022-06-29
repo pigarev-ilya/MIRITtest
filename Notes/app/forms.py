@@ -2,10 +2,12 @@ from datetime import date
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-# Create your forms here.
-
-from app.models import CustomUser
 from django.forms.extras.widgets import SelectDateWidget
+
+from app.models import CustomUser, Note
+
+
+# Create your forms here.
 
 
 class CreateCustomUserForm(UserCreationForm):
@@ -20,9 +22,10 @@ class CreateCustomUserForm(UserCreationForm):
         fields = ("username", 'date_of_birth', 'bio', 'status', "password1", "password2")
 
 
-class CreateNoteForm(forms.Form):
-    title = forms.CharField(max_length=255)
-    text = forms.CharField(widget=forms.Textarea)
+class CreateNoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ("title", 'text')
 
 
 class CustomAuthenticationForm(forms.Form):

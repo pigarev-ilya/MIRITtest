@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 import app.views
-from app.views import HomePageView, NotePageView, SignUpView, LoginView, CreateNoteView
+from app.views import HomePageView, NotePageView, SignUpView, LoginView, NoteCreateView
 
 admin.autodiscover()
 
@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^sign-up/', SignUpView.as_view(), name='sign-up'),
     url(r'^login/', LoginView.as_view(), name='login'),
     url(r'^logout/', app.views.logout_request, name='logout'),
-    url(r'^create-note/', CreateNoteView.as_view(), name='create-note'),
-    url('', HomePageView.as_view())
+    url(r'^create-note/', NoteCreateView.as_view(), name='create-note'),
+    url('', HomePageView.as_view(), name='home')
 
 )
