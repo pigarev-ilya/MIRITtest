@@ -1,5 +1,6 @@
 # coding=utf-8
 # Create your views here.
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect
@@ -24,7 +25,11 @@ class LoginView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
         user = authenticate(username=username, password=password)
-        login(self.request, user)
+        if user:
+            login(self.request, user)
+            messages.info(self.request, 'Успешный вход')
+        else:
+            messages.info(self.request, 'Ошибка логина или пароля')
         return super(LoginView, self).form_valid(form)
 
 
